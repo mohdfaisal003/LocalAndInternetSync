@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.mohd.lis.R
 import com.mohd.lis.databinding.ActivityAddNoteBinding
-import com.mohd.lis.internet.NetworkListener
 import com.mohd.lis.roomDB.NotePojo
 import com.mohd.lis.utils.AppUtil
 import com.mohd.lis.viewModels.NotesViewModel
