@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "312850323427",
+    "project_id": "localandinternetsync",
+    "storage_bucket": "localandinternetsync.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312850323427:android:15a07a8ce480c5bcc5f2d6",
+        "android_client_info": {
+          "package_name": "com.mohd.lis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKjHk-p7NjwVPChTSEleE9c8i3bTfKeaI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

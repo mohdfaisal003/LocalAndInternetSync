@@ -1,29 +1,38 @@
 package com.mohd.lis.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.mohd.lis.R
-import com.mohd.lis.appBase.AppBaseActivity
 import com.mohd.lis.databinding.ActivityAddNoteBinding
+import com.mohd.lis.internet.NetworkListener
 import com.mohd.lis.roomDB.NotePojo
 import com.mohd.lis.utils.AppUtil
 import com.mohd.lis.viewModels.NotesViewModel
 
-class AddNoteActivity : AppBaseActivity() {
+class AddNoteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddNoteBinding
     private val notesViewModel by viewModels<NotesViewModel>()
+    private var isConnected = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        NetworkManager.networkLiveData.observe(this) { isConnected ->
+            this.isConnected = isConnected
+            Log.d( "initialize-AddNote: ", isConnected.toString())
+        }
+
         setSupportActionBar(binding.addNoteToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Add Note"
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

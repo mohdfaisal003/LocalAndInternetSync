@@ -4,26 +4,34 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.mohd.lis.R
-import com.mohd.lis.appBase.AppBaseActivity
 import com.mohd.lis.databinding.ActivityUpdateNoteBinding
 import com.mohd.lis.roomDB.NotePojo
 import com.mohd.lis.utils.AppUtil
 import com.mohd.lis.viewModels.NotesViewModel
 import kotlinx.coroutines.launch
 
-class UpdateNoteActivity: AppBaseActivity() {
+class UpdateNoteActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityUpdateNoteBinding
     private val notesViewModel: NotesViewModel by viewModels()
     private var noteId = 0
+    private var isConnected = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUpdateNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        NetworkManager.networkLiveData.observe(this) { isConnected ->
+            this.isConnected = isConnected
+            Log.d( "initialize-UpdateNote: ", isConnected.toString())
+        }
+
         setSupportActionBar(binding.updateNoteToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Update Note"

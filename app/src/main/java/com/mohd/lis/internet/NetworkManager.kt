@@ -4,26 +4,25 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 
 object NetworkManager {
 
     private var connectivityManager: ConnectivityManager? = null
     private var isMonitoring = false
-    interface NetworkListener {
-        fun onNetworkChanged(isConnected: Boolean)
-    }
-    private var networkListener: NetworkListener? = null
-    fun setNetworkListener(listener: NetworkListener) {
-        this.networkListener = listener
-    }
+    private val _networkLiveData = MutableLiveData<Boolean>()
+    val networkLiveData: LiveData<Boolean> get() = _networkLiveData
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            networkListener?.onNetworkChanged(true)
+            Log.d("NetworkManager", "Network available")
+            _networkLiveData.postValue(true)
         }
 
         override fun onLost(network: Network) {
-            networkListener?.onNetworkChanged(false)
+            Log.d("NetworkManager", "Network lost")
+            _networkLiveData.postValue(false)
         }
     }
 
@@ -33,9 +32,15 @@ object NetworkManager {
             val networkRequest = NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build()
-            connectivityManager?.requestNetwork(networkRequest, networkCallback)
+            connectivityManager?.registerNetworkCallback(networkRequest, networkCallback)
             isMonitoring = true
             Log.d("NetworkManager", "Network monitoring started.")
+
+            val activeNetwork = connectivityManager?.activeNetwork
+            val capabilities = connectivityManager?.getNetworkCapabilities(activeNetwork)
+            val connected = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+            Log.d("NetworkManager", connected.toString())
+            _networkLiveData.postValue(connected)
         }
     }
 

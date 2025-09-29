@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -58,4 +59,7 @@ dependencies {
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.activity.ktx)
+
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation("com.google.firebase:firebase-firestore-ktx")
 }
