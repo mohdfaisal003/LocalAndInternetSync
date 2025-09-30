@@ -7,6 +7,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
+/* This Project is Made By Mohd Faisal For Collaboration/Projects Please feel Free to Connect over fpecial3@gmail.com
+Portfolio: https://mohdfaisal.web.app/ */
+
 object NetworkManager {
 
     private var connectivityManager: ConnectivityManager? = null

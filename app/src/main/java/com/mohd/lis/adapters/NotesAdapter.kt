@@ -1,5 +1,8 @@
 package com.mohd.lis.adapters
 
+/* This Project is Made By Mohd Faisal For Collaboration/Projects Please feel Free to Connect over fpecial3@gmail.com
+Portfolio: https://mohdfaisal.web.app/ */
+
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
