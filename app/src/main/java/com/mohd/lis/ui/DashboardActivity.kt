@@ -23,7 +23,7 @@ class DashboardActivity : AppCompatActivity() {
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        adapter = NotesAdapter(notesViewModel)
+        adapter = NotesAdapter(this,notesViewModel)
         binding.recyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
         binding.recyclerView.adapter = adapter
@@ -50,7 +50,7 @@ class DashboardActivity : AppCompatActivity() {
                 pendingNote.forEach { note ->
                     FirebaseHelper.insertOrUpdateNoteToFirebase(note.copy(isUploaded = true), { isUploaded ->
                         if (isUploaded) {
-                            notesViewModel.updateNote(note.copy(isUploaded = true))
+                            notesViewModel.updateNote(note.copy(isUploaded = true),false)
                         }
                     })
                 }

@@ -82,7 +82,7 @@ class UpdateNoteActivity: AppCompatActivity() {
                 AppUtil.getDeviceId(this),
                 false,
                 noteId
-            )
+            ), isConnected
         )
         finish()
     }

@@ -3,10 +3,12 @@ package com.mohd.lis.adapters
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +18,8 @@ import com.mohd.lis.ui.UpdateNoteActivity
 import com.mohd.lis.utils.AppUtil
 import com.mohd.lis.viewModels.NotesViewModel
 
-class NotesAdapter(private val notesViewModel: NotesViewModel) : ListAdapter<NotePojo, NotesAdapter.ViewHolder>(NotesDiffUtilCallBack()) {
+class NotesAdapter(private val context: Context, private val notesViewModel: NotesViewModel) :
+    ListAdapter<NotePojo, NotesAdapter.ViewHolder>(NotesDiffUtilCallBack()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -37,7 +40,13 @@ class NotesAdapter(private val notesViewModel: NotesViewModel) : ListAdapter<Not
     inner class ViewHolder(private val binding: RvNoteLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        private var isConnected = false;
+
         fun bind(notePojo: NotePojo) {
+            NetworkManager.networkLiveData.observe(context as AppCompatActivity) {
+                isConnected = it
+            }
+            Log.d("bind: ", isConnected.toString())
             binding.titleTv.text = notePojo.title.toString()
             binding.descTv.text = notePojo.desc.toString()
             binding.timeTv.text = notePojo.time.toString()
@@ -65,7 +74,7 @@ class NotesAdapter(private val notesViewModel: NotesViewModel) : ListAdapter<Not
 
             binding.mainCard.setOnLongClickListener(object : View.OnLongClickListener {
                 override fun onLongClick(view: View?): Boolean {
-                    showDeleteAlert(binding.root.context,notePojo)
+                    showDeleteAlert(binding.root.context, notePojo)
                     return true
                 }
             })
@@ -75,17 +84,11 @@ class NotesAdapter(private val notesViewModel: NotesViewModel) : ListAdapter<Not
             AlertDialog.Builder(context)
                 .setTitle(note.title)
                 .setMessage("Do you want to delete this note?")
-                .setPositiveButton("Delete", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        notesViewModel.deleteNote(note)
-                        dialog?.dismiss()
-                    }
-                })
-                .setNegativeButton("Cancel", object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        dialog?.dismiss()
-                    }
-                })
+                .setPositiveButton("Delete") { dialog, which ->
+                    notesViewModel.deleteNote(isConnected, note)
+                    dialog?.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, which -> dialog?.dismiss() }
                 .show()
         }
     }

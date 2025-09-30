@@ -11,7 +11,10 @@ object FirebaseHelper {
 
     fun database() = FirebaseFirestore.getInstance()
 
-    fun getAllNotesFromFireStore(deviceId: String, onResult: (List<NotePojo>) -> Unit): FirebaseHelper {
+    fun getAllNotesFromFireStore(
+        deviceId: String,
+        onResult: (List<NotePojo>) -> Unit
+    ): FirebaseHelper {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val notesRef = database().collection("notes")
@@ -20,7 +23,10 @@ object FirebaseHelper {
 
                 notesRef.addSnapshotListener { snapshot, error ->
                     if (error != null) {
-                        Log.d( "getAllNotesFromFireStore: ","Error fetching notes: ${error.message}")
+                        Log.d(
+                            "getAllNotesFromFireStore: ",
+                            "Error fetching notes: ${error.message}"
+                        )
                         return@addSnapshotListener
                     }
 
@@ -35,13 +41,16 @@ object FirebaseHelper {
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
-                Log.d( "getAllNotesFromFireStore: ",exception.message.toString())
+                Log.d("getAllNotesFromFireStore: ", exception.message.toString())
             }
         }
         return this
     }
 
-    fun insertOrUpdateNoteToFirebase(notePojo: NotePojo, onResult: (Boolean) -> Unit): FirebaseHelper {
+    fun insertOrUpdateNoteToFirebase(
+        notePojo: NotePojo,
+        onResult: (Boolean) -> Unit
+    ): FirebaseHelper {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val notesRef = database().collection("notes")
@@ -51,15 +60,39 @@ object FirebaseHelper {
 
                 notesRef.set(notePojo).addOnSuccessListener {
                     onResult(true)
-                    Log.d( "insertNoteToFirebase-addOnSuccessListener: ", "Note Uploaded Successfully")
+                    Log.d(
+                        "insertNoteToFirebase-addOnSuccessListener: ",
+                        "Note Uploaded Successfully"
+                    )
                 }.addOnFailureListener {
                     onResult(false)
-                    Log.d( "insertNoteToFirebase-addOnFailureListener: ", "Failed")
+                    Log.d("insertNoteToFirebase-addOnFailureListener: ", "Failed")
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
-                Log.d( "insertNoteToFirebase: ",exception.message.toString())
+                Log.d("insertNoteToFirebase: ", exception.message.toString())
             }
+        }
+        return this
+    }
+
+    fun deleteNoteFromFirestore(notePojo: NotePojo, onResult: (Boolean) -> Unit): FirebaseHelper {
+        try {
+            val notesRef = database().collection("notes")
+                .document(notePojo.deviceId ?: "unknown")
+                .collection("user_notes")
+                .document(notePojo.id.toString())
+
+            notesRef.delete().addOnSuccessListener {
+                onResult(true)
+                Log.d("deleteNoteFromFirebase", "Note Deleted Successfully")
+            }.addOnFailureListener { exception ->
+                onResult(false)
+                Log.e("deleteNoteFromFirebase", "Failed: ${exception.message}", exception)
+            }
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            Log.e("deleteNoteFromFirestore: ", exception.message.toString(), exception)
         }
         return this
     }
